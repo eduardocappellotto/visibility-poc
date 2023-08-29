@@ -1,52 +1,57 @@
-# visibility-poc
 
-This template should help get you started developing with Vue 3 in Vite.
+# Browser Monitoring PoC - Exam Edition 🕵️‍♂️🌐
 
-## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+In the age of digital surveillance, just how much can a browser deduce about user activity? The **Browser Monitoring PoC - Exam Edition** is a deep dive into this very question. With the backdrop of an online exam scenario, we explore the boundaries of user monitoring to see just how "private" our interactions are.
 
-## Type Support for `.vue` Imports in TS
+## 🌟 Features
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+- **Tab Activity Monitoring**: Discover when users stray away from the main tab.
+- **Live Webcam & Microphone Streams**: Understand real-time user interactions and surroundings.
+- **Device Detection**: Identify which devices users have connected.
+- **Instant User Activity Log**: Real-time logging of user actions for granular insights.
+  
+## 🛠️ Tech Stack
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+- **Vue.js 3**: Harnessing the power of reactive UI.
+- **TypeScript**: Enhanced type-safety for robustness.
+- **Tailwind CSS**: Crafting the UI with utility-first magic.
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## 🚀 Getting Started
 
-## Customize configuration
+1. **Clone the repository**:
+   
+   ```bash
+   git clone https://github.com/eduardocappellotto/visibility-poc.git
+   ```
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+2. **Navigate and Install**:
+   
+   ```bash
+   cd visibility-poc
+   npm install
+   ```
 
-## Project Setup
+3. **Fire up the server**:
+   
+   ```bash
+   npm run dev
+   ```
 
-```sh
-npm install
-```
+Dive into the exploration at `http://localhost:5173`.
 
-### Compile and Hot-Reload for Development
+## 🤝 Contribute
 
-```sh
-npm run dev
-```
+Got ideas to push the limits even further? Pull requests are heartily welcome! For major changes, please open an issue first.
 
-### Type-Check, Compile and Minify for Production
+## 🌐 Connect
 
-```sh
-npm run build
-```
+Open to discussions, feedback, or a virtual coffee chat:
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+- [Github](https://github.com/eduardocappellotto/visibility-poc)
+- [LinkedIn](https://www.linkedin.com/in/eduardo-cappellotto-991529170/)
 
-```sh
-npm run test:unit
-```
+## 📝 License
 
-### Lint with [ESLint](https://eslint.org/)
+[MIT](https://choosealicense.com/licenses/mit/)
 
-```sh
-npm run lint
-```
