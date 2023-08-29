@@ -1,42 +1,71 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-    <h1 class="text-2xl mb-4">Monitoring User Interactions</h1>
+  <div class="min-h-screen flex flex-col justify-center items-center bg-gray-200 p-8">
+    <h1 class="text-3xl mb-6 text-gray-800 font-semibold">
+      Monitoring User Interactions
+    </h1>
 
-    <p class="mb-4" :class="{ 'text-green-500': isTabActive, 'text-red-500': !isTabActive }">
-      {{ isTabActive ? 'Tab is active' : 'Tab is not active' }}
-    </p>
+    <div class="mb-6 flex space-x-4">
+      <a href="https://github.com/eduardocappellotto/visibility-poc" class="text-blue-600 hover:text-blue-800">
+        Github
+      </a>
+      <span class="text-gray-400">|</span>
+      <a href="https://www.linkedin.com/in/eduardo-cappellotto-991529170/" class="text-blue-600 hover:text-blue-800">
+        LinkedIn
+      </a>
+    </div>
 
-    <p class="mb-4" :class="{ 'text-green-500': videoDeviceInfo, 'text-red-500': !videoDeviceInfo }">
-      {{ videoDeviceInfo ? 'Camera: ' + videoDeviceInfo.label : 'Camera not detected' }}
-    </p>
+    <div class="mb-4 p-4 bg-white shadow-md rounded-md w-full max-w-lg space-y-4">
+      <p class="flex items-center space-x-2" :class="{ 'text-green-600': isTabActive, 'text-red-600': !isTabActive }">
+        <span class="material-icons" :class="{ 'text-green-600': isTabActive, 'text-red-600': !isTabActive }">
+          {{ isTabActive ? '✅' : '❌' }}
+        </span>
+        <span>
+          {{ isTabActive ? 'Tab is active' : 'Tab is not active' }}
+        </span>
+      </p>
 
-    <p class="mb-4" :class="{ 'text-green-500': audioDeviceInfo, 'text-red-500': !audioDeviceInfo }">
-      {{ audioDeviceInfo ? 'Microphone: ' + audioDeviceInfo.label : 'Microphone not detected' }}
-    </p>
+      <p :class="{ 'text-green-600': videoDeviceInfo, 'text-red-600': !videoDeviceInfo }">
+        Camera: {{ videoDeviceInfo ? videoDeviceInfo.label : 'Not detected' }}
+      </p>
 
-    <p class="mb-4" :class="{ 'text-green-500': isFocused, 'text-red-500': !isFocused }">
-      {{ isFocused ? 'Exam tab is in focus' : 'Exam tab lost focus' }}
-    </p>
+      <p :class="{ 'text-green-600': audioDeviceInfo, 'text-red-600': !audioDeviceInfo }">
+        Microphone: {{ audioDeviceInfo ? audioDeviceInfo.label : 'Not detected' }}
+      </p>
 
-    <span id="microphone-label"></span>
-    <span id="video-label"></span>
+      <p class="flex items-center space-x-2" :class="{ 'text-green-600': isFocused, 'text-red-600': !isFocused }">
+        <span class="material-icons" :class="{ 'text-green-600': isFocused, 'text-red-600': !isFocused }">
+          {{ isFocused ? '✅' : '❌' }}
+        </span>
+        <span>
+          {{ isFocused ? 'Exam tab is in focus' : 'Exam tab lost focus' }}
+        </span>
+      </p>
+    </div>
 
     <button @click="accessWebcamAndMicrophone"
-      class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
+      <span class="material-icons-outlined mr-1">📷</span>
       Access Webcam and Microphone
     </button>
-    <video ref="videoRef" class="mb-4 border rounded h-64" autoplay playsinline></video>
-    <span>Microphone level:</span>
-    <canvas ref="canvasRef" class="mb-4 border rounded h-36" width="200" height="100"></canvas>
 
-    <h2 class="text-xl mb-2">User Actions:</h2>
-    <ul class="bg-white shadow-md rounded p-4 overflow-auto">
-      <li v-for="(action, index) in actions" :key="index" class="border-b py-1">
-        {{ action.timestamp }} - {{ action.message }}
-      </li>
-    </ul>
+    <video v-if="videoDeviceInfo" ref="videoRef" class="mb-4 border rounded h-64" autoplay playsinline></video>
+
+    <div v-if="audioDeviceInfo" class="mb-4 bg-white shadow-md rounded-md p-4">
+      <span class="block mb-2">Microphone level:</span>
+      <canvas ref="canvasRef" class="border rounded h-36" width="200" height="100"></canvas>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg p-4 w-full max-w-xl">
+      <h2 class="text-xl mb-4 border-b pb-2">User Actions:</h2>
+      <ul class="overflow-auto">
+        <li v-for="(action, index) in actions" :key="index" class="border-b py-1 text-gray-700">
+          {{ action.timestamp }} - {{ action.message }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
+
 
 <script lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
@@ -52,7 +81,7 @@ export default {
     const isTabActive = ref(true);
     const actions = ref<UserAction[]>([]);
     const videoStream = ref<MediaStream | null>(null);
-    const videoRef = ref<HTMLVideoElement | null>(null);
+    const videoRef = ref<HTMLVideoElement>(null);
     const canvasRef = ref<HTMLCanvasElement | null>(null);
     let audioContext: AudioContext | null = null;
     let analyzerNode: AnalyserNode | null = null;
@@ -90,8 +119,9 @@ export default {
     const accessWebcamAndMicrophone = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        await getDeviceNames(stream);
+
         videoStream.value = stream;
-        getDeviceNames(stream);
 
         if (videoRef.value) {
           videoRef.value.srcObject = stream;
@@ -111,77 +141,59 @@ export default {
         addAction('Failed to access webcam or microphone');
       }
     };
-    const getDeviceNames = (stream: MediaStream) => {
-      const videoTracks = stream.getVideoTracks(); const audioTracks = stream.getAudioTracks();
+    const getDeviceNames = async (stream: MediaStream) => {
+      const devices = await navigator.mediaDevices.enumerateDevices();
 
-      if (videoTracks.length > 0) {
-        const videoTrack = videoTracks[0]; videoDeviceInfo.value = videoTrack.getSettings().deviceId; const videoLabel = videoTrack.getLabel(); const videoLabelElement = document.getElementById('video-label');
+      const videoDeviceId = stream.getVideoTracks()[0]?.getSettings().deviceId;
+      const audioDeviceId = stream.getAudioTracks()[0]?.getSettings().deviceId;
 
-        if (videoLabelElement) {
-          videoLabelElement.innerText = `Camera: ${videoLabel}`;
-        }
-
-
+      if (videoDeviceId) {
+        videoDeviceInfo.value = devices.find(device => device.deviceId === videoDeviceId);
       }
 
-      if (audioTracks.length > 0) {
-        const audioTrack = audioTracks[0]; audioDeviceInfo.value = audioTrack.getSettings().deviceId; const audioLabel = audioTrack.getLabel(); const audioLabelElement = document.getElementById('microphone-label');
-
-        if (audioLabelElement) {
-          audioLabelElement.innerText = `Microphone: ${audioLabel}`;
-        }
-
-
+      if (audioDeviceId) {
+        audioDeviceInfo.value = devices.find(device => device.deviceId === audioDeviceId);
       }
     };
 
     const startVisualizer = () => {
-      if (canvasRef.value && analyzerNode) {
-        const canvas = canvasRef.value; const context = canvas.getContext('2d');
+      if (canvasRef.value && analyzerNode && audioContext) {
+        const canvas = canvasRef.value;
+        const ctx = canvas.getContext('2d');
+        const bufferLength = analyzerNode.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
 
-        if (context) {
-          const bufferLength = analyzerNode.frequencyBinCount;
-          const dataArray = new Uint8Array(bufferLength);
+        const draw = () => {
+          if (animationId && ctx && analyzerNode) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-          const draw = () => {
-            animationId = requestAnimationFrame(draw);
+            analyzerNode.getByteFrequencyData(dataArray);
 
-            analyzerNode.getByteTimeDomainData(dataArray);
-
-            context.clearRect(0, 0, canvas.width, canvas.height);
-
-            context.lineWidth = 2;
-            context.strokeStyle = 'rgb(0, 0, 0)';
-            context.beginPath();
-
-            const sliceWidth = canvas.width * 1.0 / bufferLength;
+            const barWidth = canvas.width / bufferLength;
             let x = 0;
 
             for (let i = 0; i < bufferLength; i++) {
-              const v = dataArray[i] / 128.0;
-              const y = v * canvas.height / 2;
+              const barHeight = dataArray[i];
 
-              if (i === 0) {
-                context.moveTo(x, y);
-              } else {
-                context.lineTo(x, y);
-              }
+              ctx.fillStyle = `rgb(${barHeight + 100},50,50)`;
+              ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
 
-              x += sliceWidth;
+              x += barWidth + 1;
             }
 
-            context.lineTo(canvas.width, canvas.height / 2);
-            context.stroke();
-          };
+            animationId = requestAnimationFrame(draw);
+          }
+        };
 
-          draw();
-        }
-
-
+        animationId = requestAnimationFrame(draw);
       }
     };
 
-    onMounted(() => { document.addEventListener('visibilitychange', handleVisibilityChange); window.addEventListener('focus', handleFocus); window.addEventListener('blur', handleBlur); });
+    onMounted(() => {
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      window.addEventListener('focus', handleFocus);
+      window.addEventListener('blur', handleBlur);
+    });
 
     onBeforeUnmount(() => {
       document.removeEventListener('visibilitychange', handleVisibilityChange); window.removeEventListener('focus', handleFocus); window.removeEventListener('blur', handleBlur);
@@ -193,7 +205,7 @@ export default {
       if (animationId) { cancelAnimationFrame(animationId); }
     });
 
-    return { isTabActive, videoDeviceInfo, audioDeviceInfo, isFocused, accessWebcamAndMicrophone, actions, };
+    return { isTabActive, videoDeviceInfo, audioDeviceInfo, isFocused, accessWebcamAndMicrophone, actions, videoRef, canvasRef };
 
   }
 }
