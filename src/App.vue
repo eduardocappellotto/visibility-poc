@@ -105,8 +105,8 @@ export default {
     const videoDeviceInfo = ref<MediaDeviceInfo | null | undefined>(null);
     const audioDeviceInfo = ref<MediaDeviceInfo | null | undefined>(null);
 
-    const isFocused: boolean = ref(true);
-    const userConsentGiven: boolean = ref(false);
+    const isFocused = ref<boolean>(true);
+    const userConsentGiven = ref<boolean>(false);
 
 
     const addAction = (message: string) => {
