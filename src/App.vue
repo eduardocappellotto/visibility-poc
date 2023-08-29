@@ -14,6 +14,20 @@
       </a>
     </div>
 
+    <div v-if="!userConsentGiven" class="fixed top-0 left-0 w-full p-4 bg-red-600 text-white z-50">
+      <div class="container mx-auto">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="font-bold">User Consent Required!</p>
+            <p>This platform utilizes monitoring mechanisms for educational purposes. By proceeding, you are consenting to
+              these tracking actions.</p>
+          </div>
+          <button @click="giveConsent" class="bg-green-500 hover:bg-green-700 px-4 py-2 rounded">I Understand &
+            Consent</button>
+        </div>
+      </div>
+    </div>
+
     <div class="mb-4 p-4 bg-white shadow-md rounded-md w-full max-w-lg space-y-4">
       <p class="flex items-center space-x-2" :class="{ 'text-green-600': isTabActive, 'text-red-600': !isTabActive }">
         <span class="material-icons" :class="{ 'text-green-600': isTabActive, 'text-red-600': !isTabActive }">
@@ -42,8 +56,9 @@
       </p>
     </div>
 
-    <button @click="accessWebcamAndMicrophone"
-      class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
+
+    <button :disabled="!userConsentGiven" @click="accessWebcamAndMicrophone"
+      class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow disabled:bg-slate-400 disabled:hover:cursor-not-allowed">
       <span class="material-icons-outlined mr-1">📷</span>
       Access Webcam and Microphone
     </button>
@@ -89,7 +104,10 @@ export default {
 
     const videoDeviceInfo = ref<MediaDeviceInfo | null | undefined>(null);
     const audioDeviceInfo = ref<MediaDeviceInfo | null | undefined>(null);
-    const isFocused = ref(true);
+
+    const isFocused: boolean = ref(true);
+    const userConsentGiven: boolean = ref(false);
+
 
     const addAction = (message: string) => {
       const timestamp = new Date().toLocaleTimeString();
@@ -188,6 +206,9 @@ export default {
         animationId = requestAnimationFrame(draw);
       }
     };
+    const giveConsent = () => {
+      userConsentGiven.value = true;
+    };
 
     onMounted(() => {
       document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -205,7 +226,7 @@ export default {
       if (animationId) { cancelAnimationFrame(animationId); }
     });
 
-    return { isTabActive, videoDeviceInfo, audioDeviceInfo, isFocused, accessWebcamAndMicrophone, actions, videoRef, canvasRef };
+    return { isTabActive, videoDeviceInfo, audioDeviceInfo, isFocused, accessWebcamAndMicrophone, actions, videoRef, canvasRef, giveConsent, userConsentGiven };
 
   }
 }
