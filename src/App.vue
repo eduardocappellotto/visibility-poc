@@ -81,14 +81,14 @@ export default {
     const isTabActive = ref(true);
     const actions = ref<UserAction[]>([]);
     const videoStream = ref<MediaStream | null>(null);
-    const videoRef = ref<HTMLVideoElement>(null);
+    const videoRef = ref<HTMLVideoElement | null>(null);
     const canvasRef = ref<HTMLCanvasElement | null>(null);
     let audioContext: AudioContext | null = null;
     let analyzerNode: AnalyserNode | null = null;
     let animationId: number | null = null;
 
-    const videoDeviceInfo = ref<MediaDeviceInfo | null>(null);
-    const audioDeviceInfo = ref<MediaDeviceInfo | null>(null);
+    const videoDeviceInfo = ref<MediaDeviceInfo | null | undefined>(null);
+    const audioDeviceInfo = ref<MediaDeviceInfo | null | undefined>(null);
     const isFocused = ref(true);
 
     const addAction = (message: string) => {
