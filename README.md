@@ -4,6 +4,8 @@
 
 In the age of digital surveillance, just how much can a browser deduce about user activity? The **Browser Monitoring PoC - Exam Edition** is a deep dive into this very question. With the backdrop of an online exam scenario, we explore the boundaries of user monitoring to see just how "private" our interactions are.
 
+Visit the live website in Netlify here: https://visibility-poc.netlify.app/
+
 
 ## 🛡️ User Consent Alert
 
